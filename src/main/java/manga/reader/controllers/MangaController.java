@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("/api/mangas")
 public class MangaController {
 
     private final MangakakalotService mangakakalotService;
@@ -23,11 +23,12 @@ public class MangaController {
      * @param page Page number (defaults to 1)
      * @return JSON response with latest manga
      */
-    @GetMapping("/latest")
+    @GetMapping("/")
     public ResponseEntity<Map<String, Object>> getLatestManga(
             @RequestParam(value = "page", defaultValue = "1") int page) {
         try {
             Map<String, Object> result = mangakakalotService.latestManga(page);
+            System.out.println(result);
             return ResponseEntity.ok(result);
         } catch (IOException e) {
             return ResponseEntity.status(500).body(Map.of("error", "Failed to fetch latest manga: " + e.getMessage()));
@@ -61,7 +62,7 @@ public class MangaController {
      * @param mangaId Manga ID
      * @return JSON response with manga details
      */
-    @GetMapping("/manga/{mangaId}")
+    @GetMapping("/{mangaId}")
     public ResponseEntity<Map<String, Object>> getMangaInfo(@PathVariable String mangaId) {
         try {
             Map<String, Object> result = mangakakalotService.mangaInfo(mangaId);
@@ -76,13 +77,15 @@ public class MangaController {
     /**
      * Fetch a specific chapter of a manga
      *
-     * @param chapterPath Chapter path
+//     * @param chapterPath Chapter path
      * @return JSON response with chapter data
      */
-    @GetMapping("/chapter/{chapterPath:.+}")
-    public ResponseEntity<Map<String, Object>> getChapter(@PathVariable String chapterPath) {
+    @GetMapping("/chapter/{mangaId}/{chapterId}")
+    public ResponseEntity<Map<String, Object>> getChapter(
+            @PathVariable String mangaId,
+            @PathVariable(required = false) String chapterId) {
         try {
-            Map<String, Object> result = mangakakalotService.fetchChapter(chapterPath);
+            Map<String, Object> result = mangakakalotService.fetchChapter(mangaId+"/"+chapterId);
             return ResponseEntity.ok(result);
         } catch (IOException e) {
             return ResponseEntity.status(500).body(Map.of("error", "Failed to fetch chapter: " + e.getMessage()));
