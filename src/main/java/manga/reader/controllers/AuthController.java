@@ -1,5 +1,6 @@
 package manga.reader.controllers;
 
+import manga.reader.exception.AuthenticationException;
 import manga.reader.jwt.JwtUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,25 +20,27 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
-        String role = loginRequest.role();
-
-        if (role != null) {
-            String token = jwtUtil.generateToken(loginRequest.username(), role);
-
-            Map<String, String> response = new HashMap<>();
-            response.put("token", token);
-            response.put("username", loginRequest.username());
-            response.put("role", role);
-
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.status(401).body("Invalid credentials");
+        if (loginRequest.username() == null || loginRequest.password() == null) {
+            throw new AuthenticationException("Username and password are required");
         }
+
+        if (loginRequest.role() == null) {
+            throw new AuthenticationException("Role is required");
+        }
+
+        String token = jwtUtil.generateToken(loginRequest.username(), loginRequest.role());
+
+        Map<String, String> response = new HashMap<>();
+        response.put("token", token);
+        response.put("username", loginRequest.username());
+        response.put("role", loginRequest.role());
+
+        return ResponseEntity.ok(response);
     }
 
-    public record LoginRequest (
-        String username,
-        String password,
-        String role
+    public record LoginRequest(
+            String username,
+            String password,
+            String role
     ) {}
 }
