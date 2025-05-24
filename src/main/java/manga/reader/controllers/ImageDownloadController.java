@@ -1,5 +1,6 @@
 package manga.reader.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
 import manga.reader.exception.BadRequestException;
 import manga.reader.services.ImageDownloadService;
 import org.springframework.core.io.Resource;
@@ -20,6 +21,10 @@ public class ImageDownloadController {
         this.imageDownloadService = imageDownloadService;
     }
 
+    @Operation(
+            summary = "Download image from URL",
+            description = "Downloads an image given its URL and an optional referer."
+    )
     @GetMapping("/download")
     public ResponseEntity<Resource> downloadImage(
             @RequestParam("url") String imageUrl,

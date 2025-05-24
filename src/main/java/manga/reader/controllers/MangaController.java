@@ -1,5 +1,6 @@
 package manga.reader.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
 import manga.reader.exception.BadRequestException;
 import manga.reader.exception.ResourceNotFoundException;
 import manga.reader.services.MangakakalotService;
@@ -19,6 +20,7 @@ public class MangaController {
         this.mangakakalotService = mangakakalotService;
     }
 
+    @Operation(summary = "Get latest manga list", description = "Returns the latest manga releases.")
     @GetMapping("/")
     public ResponseEntity<Map<String, Object>> getLatestManga(
             @RequestParam(value = "page", defaultValue = "1") int page) throws IOException {
@@ -29,6 +31,7 @@ public class MangaController {
         return ResponseEntity.ok(result);
     }
 
+    @Operation(summary = "Search manga", description = "Search for manga by keyword.")
     @GetMapping("/search")
     public ResponseEntity<Map<String, Object>> searchManga(
             @RequestParam(value = "query") String query,
@@ -39,11 +42,12 @@ public class MangaController {
         if (page < 1) {
             throw new BadRequestException("Page number must be greater than 0");
         }
-        
+
         Map<String, Object> result = mangakakalotService.search(query, page);
         return ResponseEntity.ok(result);
     }
 
+    @Operation(summary = "Get manga info", description = "Get detailed information about a manga.")
     @GetMapping("/{mangaId}")
     public ResponseEntity<Map<String, Object>> getMangaInfo(@PathVariable String mangaId) throws IOException {
         if (mangaId == null || mangaId.trim().isEmpty()) {
@@ -57,6 +61,7 @@ public class MangaController {
         return ResponseEntity.ok(result);
     }
 
+    @Operation(summary = "Get chapter images", description = "Fetch images for a specific manga chapter.")
     @GetMapping("/chapter/{mangaId}/{chapterId}")
     public ResponseEntity<Map<String, Object>> getChapter(
             @PathVariable String mangaId,

@@ -1,5 +1,8 @@
 package manga.reader.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import manga.reader.exception.AuthenticationException;
 import manga.reader.jwt.JwtUtil;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +21,15 @@ public class AuthController {
         this.jwtUtil = jwtUtil;
     }
 
+    @Operation(
+            summary = "User login",
+            description = "Authenticates user with username, password, and role. Returns JWT token.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Login successful"),
+                    @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
+            }
+    )
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         if (loginRequest.username() == null || loginRequest.password() == null) {
