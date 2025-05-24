@@ -26,9 +26,9 @@ public class SecurityConfig {
         http.csrf().disable()
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/api/auth/login").permitAll()
-                        .requestMatchers("/api/mangas/").hasAnyRole("ADMIN", "MANAGER")
-                        .requestMatchers("/api/auth/protected").authenticated()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/api/mangas").hasAnyRole("READER")
+                        .requestMatchers("/api/images").hasAnyRole("READER")
+                        .anyRequest().permitAll()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
