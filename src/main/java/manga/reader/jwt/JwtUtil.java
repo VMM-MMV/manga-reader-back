@@ -16,7 +16,7 @@ import java.util.function.Function;
 public class JwtUtil {
 
     private static final String SECRET = "mySecretKeymySecretKeymySecretKeymySecretKey"; // 256-bit key
-    private static final int JWT_TOKEN_VALIDITY = 30 * 60; // 30 minutes (configurable timeout)
+    private static final int JWT_TOKEN_VALIDITY = 1 * 60; // 30 minutes (configurable timeout)
 
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(SECRET.getBytes());
